@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL,
     password TEXT NOT NULL,
     full_name VARCHAR(150),
-    date_of_birth DATE,
     created_at TIMESTAMP DEFAULT current_timestamp,
     updated_at TIMESTAMP
 );
