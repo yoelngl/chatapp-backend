@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/chatapp/backend/config"
 	"github.com/chatapp/backend/database"
 	"github.com/chatapp/backend/router"
 	"github.com/gofiber/fiber/v2"
@@ -19,6 +20,8 @@ func main() {
 		IdleTimeout: 5 * time.Second,
 	})
 
+	port := config.Config("APP_PORT")
+
 	router.SetupRoutes(app)
 
 	app.Use(cors.New())
@@ -27,7 +30,7 @@ func main() {
 	})
 
 	go func() {
-		if err := app.Listen(":3000"); err != nil {
+		if err := app.Listen(":"+port); err != nil {
 			log.Panic(err)
 		}
 	}()
