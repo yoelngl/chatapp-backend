@@ -8,11 +8,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/chatapp/backend/config"
 	"github.com/chatapp/backend/database"
 	"github.com/chatapp/backend/router"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -20,17 +20,21 @@ func main() {
 		IdleTimeout: 5 * time.Second,
 	})
 
-	port := config.Config("APP_PORT")
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+
+	port := os.Getenv("APP_PORT")
 
 	router.SetupRoutes(app)
 
 	app.Use(cors.New())
 	app.Use(func(c *fiber.Ctx) error {
-		return c.SendStatus(404)
+		return c.Status(fiber.StatusNotFound).JSON(fiber.ErrNotFound)
 	})
 
 	go func() {
-		if err := app.Listen(":"+port); err != nil {
+		if err := app.Listen(":" + port); err != nil {
 			log.Panic(err)
 		}
 	}()
